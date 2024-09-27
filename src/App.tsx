@@ -5,6 +5,7 @@ import { Toaster } from "./components/ui/toaster"
 import Auth from "./components/Pages/Auth/Auth"
 import Registration from "./components/Pages/Registration/Registration"
 import Projects from "./components/Pages/Projects/Projects"
+import Dashboard from "./components/Pages/Dashboard/Dashboard"
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/login" element={<Auth />} />
         <Route path="/registration" element={<Registration />} />
         <Route path="/projects" element={<Projects />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
       <Toaster />
     </BrowserRouter>

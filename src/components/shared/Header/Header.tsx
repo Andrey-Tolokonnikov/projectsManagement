@@ -9,6 +9,7 @@ const Header = () => {
           items={[
             { title: "Login", href: "/login" },
             { title: "Projects", href: "/projects" },
+            { title: "Dashboard", href: "/dashboard" },
           ]}
         />
       </Container>
