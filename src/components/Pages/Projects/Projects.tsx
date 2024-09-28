@@ -1,9 +1,18 @@
-import Container from "@/components/shared/Container/Container"
+import Container from "@/components/shared/Container/Container";
+import SectionCreated from "@/components/shared/SectionCreated/SectionCreated";
 
 const Projects = () => {
   return (
-    <Container>Здесь перечень проектов и где-то кнопка добавления</Container>
-  )
-}
+    <>
+      {true ? (
+        <SectionCreated />
+      ) : (
+        <Container>
+          Здесь перечень проектов и где-то кнопка добавления
+        </Container>
+      )}
+    </>
+  );
+};
 
-export default Projects
+export default Projects;
