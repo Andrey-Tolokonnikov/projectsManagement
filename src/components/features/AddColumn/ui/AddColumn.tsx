@@ -1,63 +1,64 @@
 import { useDispatch } from "react-redux"
-import { Button } from "../ui/button"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogClose,
   DialogContent,
   DialogFooter,
   DialogTrigger,
-} from "../ui/dialog"
-import { Input } from "../ui/input"
-import { Label } from "../ui/label"
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import { useState } from "react"
 import { DialogTitle } from "@radix-ui/react-dialog"
-import { addTask, setColumns } from "@/store/tasksSlice"
+import { addColumn } from "@/store/tasksSlice"
+
+import { IColumn } from "@/components/widgets/Column/model/Column"
 import { useSelector } from "react-redux"
 import { RootState } from "@/store/store"
 
-const AddTask = () => {
+const AddColumn = () => {
   const dispatch = useDispatch()
+  const [columnName, setColumnName] = useState("")
   const data = useSelector((state: RootState) => state.tasks)
-  const [taskContent, setTaskContent] = useState("") // Локальное состояние для текста задачи
+  const lastColumnId = Math.max(
+    ...data.columns.map((column) => parseInt(column.id.split("-")[1]))
+  )
+  //console.log(data.columns.map((column) => parseInt(column.id)))
 
   const handleSave = () => {
-    // Генерация уникального ID для новой задачи
-    const newTaskId = `task-${Date.now()}`
+    // Генерация уникального ID для нового столбца
+    const newColumnId = `column-${lastColumnId + 1}`
 
     // Создание нового объекта задачи
-    const newTask = {
-      id: newTaskId,
-      content: taskContent,
+    const newColumn: IColumn = {
+      id: newColumnId,
+      title: columnName,
+      taskIds: [],
     }
 
-    // Добавление новой задачи в состояние
-    dispatch(addTask(newTask))
+    dispatch(addColumn(newColumn))
 
-    const firstColumn = structuredClone(data.columns[0])
-    firstColumn.taskIds.push(newTaskId)
-
-    dispatch(setColumns([firstColumn, ...data.columns.slice(1)]))
-
-    setTaskContent("")
+    setColumnName("")
   }
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Добавить задачу</Button>
+        <Button variant="outline">Добавить столбец</Button>
       </DialogTrigger>
       <DialogTitle className="hidden">Добавить задачу</DialogTitle>
       <DialogContent className="sm:max-w-[425px]">
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="text" className="text-right">
-              Текст задачи
+              Название столбца
             </Label>
             <Input
               id="text"
               className="col-span-3"
-              value={taskContent} // Привязываем локальное состояние к полю ввода
-              onChange={(e) => setTaskContent(e.target.value)} // Обновляем состояние при вводе
+              value={columnName} // Привязываем локальное состояние к полю ввода
+              onChange={(e) => setColumnName(e.target.value)} // Обновляем состояние при вводе
             />
           </div>
         </div>
@@ -73,4 +74,4 @@ const AddTask = () => {
   )
 }
 
-export default AddTask
+export default AddColumn

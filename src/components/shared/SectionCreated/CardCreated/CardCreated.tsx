@@ -1,17 +1,17 @@
-import { useEffect, useState, MouseEvent } from "react";
-import CardContainer from "../../CardContainer/CardContainer";
-import CreateProjectForm from "@/components/widgets/AuthForm/ui/CreateProjectForm";
+import { useEffect, useState } from "react"
+import CardContainer from "../../CardContainer/CardContainer"
+import CreateProjectForm from "@/components/widgets/AuthForm/ui/CreateProjectForm"
 
 type Props = {
-  goToBack: () => void;
-};
+  goToBack: () => void
+}
 
 const CardCreated = (props: Props) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
-    if (!isVisible) setIsVisible(true);
-  }, [isVisible]);
+    if (!isVisible) setIsVisible(true)
+  }, [isVisible])
 
   return (
     <div
@@ -25,7 +25,7 @@ const CardCreated = (props: Props) => {
         content={<CreateProjectForm goToBack={props.goToBack} />}
       />
     </div>
-  );
-};
+  )
+}
 
-export default CardCreated;
+export default CardCreated

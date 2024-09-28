@@ -27,11 +27,11 @@ const initialState: ITasksState = {
     },
   ],
   tasks: [
-    { id: "task-1", content: "Task 1" },
-    { id: "task-2", content: "Task 2" },
-    { id: "task-3", content: "Task 3" },
-    { id: "task-4", content: "Task 4" },
-    { id: "task-5", content: "Task 5" },
+    { id: "task-1", content: "Task 1", isCompleted: false },
+    { id: "task-2", content: "Task 2", isCompleted: true },
+    { id: "task-3", content: "Task 3", isCompleted: false },
+    { id: "task-4", content: "Task 4", isCompleted: false },
+    { id: "task-5", content: "Task 5", isCompleted: false },
   ],
 }
 
@@ -48,7 +48,41 @@ export const TasksSlice = createSlice({
     addTask: (state, action: PayloadAction<ITask>) => {
       state.tasks.push(action.payload)
     },
+    addColumn: (state, action: PayloadAction<IColumn>) => {
+      state.columns.push(action.payload)
+    },
+    deleteColumn: (state, action: PayloadAction<string>) => {
+      state.columns = state.columns.filter(
+        (column) => column.id !== action.payload
+      )
+    },
+    deleteTask: (state, action: PayloadAction<string>) => {
+      state.columns = state.columns.map((column) => ({
+        ...column,
+        taskIds: column.taskIds.filter((taskId) => taskId !== action.payload),
+      }))
+      state.tasks = state.tasks.filter((task) => task.id !== action.payload)
+    },
+    completeTask: (state, action: PayloadAction<string>) => {
+      state.tasks = state.tasks.map((task) =>
+        task.id === action.payload ? { ...task, isCompleted: true } : task
+      )
+    },
+    uncompleteTask: (state, action: PayloadAction<string>) => {
+      state.tasks = state.tasks.map((task) =>
+        task.id === action.payload ? { ...task, isCompleted: false } : task
+      )
+    },
   },
 })
 
-export const { setColumns, setTasks, addTask } = TasksSlice.actions
+export const {
+  setColumns,
+  setTasks,
+  addTask,
+  addColumn,
+  deleteTask,
+  deleteColumn,
+  completeTask,
+  uncompleteTask,
+} = TasksSlice.actions

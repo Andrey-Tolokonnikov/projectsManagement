@@ -1,4 +1,5 @@
-import AddTask from "@/components/features/AddTask"
+import AddColumn from "@/components/features/AddColumn/ui/AddColumn"
+import AddTask from "@/components/features/AddTask/ui/AddTask"
 import Container from "@/components/shared/Container/Container"
 import { IColumn } from "@/components/widgets/Column/model/Column"
 
@@ -74,13 +75,6 @@ const Dashboard: React.FC = () => {
         taskIds: finishTaskIds,
       }
 
-      // dispatch(
-      //   setColumns({
-      //     ...data.columns,
-      //     [newStart.id]: newStart,
-      //     [newFinish.id]: newFinish,
-      //   })
-      // )
       const newColumns = [
         ...data.columns.filter(
           (column) =>
@@ -95,15 +89,16 @@ const Dashboard: React.FC = () => {
   }
   return (
     <Container className="mt-4">
-      <AddTask />
+      <div className="flex gap-4">
+        <AddTask />
+        <AddColumn />
+      </div>
       <DragDropContext onDragEnd={onDragEnd}>
         <div className="flex gap-4 mt-4">
           {data.columns.map((column: IColumn) => {
-            //const column = data.columns[columnId]
             const tasks = column.taskIds.map(
               (taskId) => data.tasks.find((task) => task.id === taskId)!
             )
-
             return <Column key={column.id} column={column} tasks={tasks} />
           })}
         </div>
