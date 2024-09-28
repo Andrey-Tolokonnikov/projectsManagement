@@ -17,7 +17,7 @@ const Column = (props: Props) => {
           ref={provided.innerRef}
           {...provided.droppableProps}
           className={cn(
-            "p-3 rounded-md min-w-[200px] max-w-[400px]",
+            "p-3 rounded-md min-w-[200px] max-w-[400px] shadow-sm",
             colors[
               (parseInt(props.column.id.split("-")[1]) - 1) % colors.length
             ]
