@@ -1,21 +1,18 @@
-import { useState, useEffect } from "react";
+import * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import CardCreated from "./CardCreated/CardCreated";
 
 const SectionCreate = () => {
-  const [isAnimate, setIsAnimate] = useState<boolean>(false);
-  const [isCreate, setIsCreate] = useState<boolean>(false);
+  const [isAnimate, setIsAnimate] = React.useState<boolean>(false);
+  const [isCreate, setIsCreate] = React.useState<boolean>(false);
 
   function goToBack() {
     setIsCreate(false);
     setIsAnimate(false);
-    // setTimeout(() => {
-    //   setIsAnimate(false);
-    // }, 200);
   }
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!isAnimate) return setIsCreate(false);
 
     if (isAnimate)

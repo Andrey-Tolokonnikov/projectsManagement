@@ -1,49 +1,17 @@
+import AddTask from "@/components/features/AddTask"
 import Container from "@/components/shared/Container/Container"
 import { IColumn } from "@/components/widgets/Column/model/Column"
+
 import Column from "@/components/widgets/Column/ui/Column"
-import { ITask } from "@/components/widgets/Task/model/model"
-import { setColumns, TasksState } from "@/store/tasksSlice"
+import { RootState } from "@/store/store"
+
+import { setColumns } from "@/store/tasksSlice"
 
 import { DragDropContext, DropResult } from "react-beautiful-dnd"
 import { useDispatch, useSelector } from "react-redux"
 
-// interface InitialData {
-//   columns: { [key: string]: IColumn }
-//   tasks: { [key: string]: ITask }
-//   columnOrder: string[]
-// }
-
-// const initialData: InitialData = {
-//   columns: {
-//     "column-1": {
-//       id: "column-1",
-//       title: "To be done",
-//       taskIds: ["task-1", "task-2", "task-3"],
-//     },
-//     "column-2": {
-//       id: "column-2",
-//       title: "In progress",
-//       taskIds: ["task-4", "task-5"],
-//     },
-//     "column-3": {
-//       id: "column-3",
-//       title: "Done",
-//       taskIds: [],
-//     },
-//   },
-//   tasks: {
-//     "task-1": { id: "task-1", content: "Task 1" },
-//     "task-2": { id: "task-2", content: "Task 2" },
-//     "task-3": { id: "task-3", content: "Task 3" },
-//     "task-4": { id: "task-4", content: "Task 4" },
-//     "task-5": { id: "task-5", content: "Task 5" },
-//   },
-//   columnOrder: ["column-1", "column-2", "column-3"],
-// }
-
 const Dashboard: React.FC = () => {
-  //const [data, setData] = useState<InitialData>(initialData)
-  const data = useSelector((state: TasksState) => state.tasks)
+  const data = useSelector((state: RootState) => state.tasks)
 
   const dispatch = useDispatch()
 
@@ -63,8 +31,16 @@ const Dashboard: React.FC = () => {
       return
     }
 
-    const startColumn = data.columns[source.droppableId]
-    const finishColumn = data.columns[destination.droppableId]
+    const startColumn = data.columns.find(
+      (column) => column.id === source.droppableId
+    )
+    const finishColumn = data.columns.find(
+      (column) => column.id === destination.droppableId
+    )
+
+    if (!startColumn || !finishColumn) {
+      return
+    }
 
     // Перемещение в пределах одной колонки
     if (startColumn.id === finishColumn.id) {
@@ -72,17 +48,16 @@ const Dashboard: React.FC = () => {
       newTaskIds.splice(source.index, 1)
       newTaskIds.splice(destination.index, 0, draggableId)
 
-      const newColumn = {
-        ...startColumn,
-        taskIds: newTaskIds,
-      }
-
-      dispatch(
-        setColumns({
-          ...data.columns,
-          [newColumn.id]: newColumn,
-        })
+      const copyColumn: IColumn = structuredClone(
+        data.columns.find((column) => column.id === startColumn.id)!
       )
+      copyColumn!.taskIds = newTaskIds
+      const newColumns = [
+        ...data.columns.filter((column) => column.id !== startColumn.id),
+        copyColumn,
+      ]
+      newColumns.sort((a, b) => a.id.localeCompare(b.id))
+      dispatch(setColumns(newColumns))
     } else {
       // Перемещение между колонками
       const startTaskIds = Array.from(startColumn.taskIds)
@@ -99,22 +74,35 @@ const Dashboard: React.FC = () => {
         taskIds: finishTaskIds,
       }
 
-      dispatch(
-        setColumns({
-          ...data.columns,
-          [newStart.id]: newStart,
-          [newFinish.id]: newFinish,
-        })
-      )
+      // dispatch(
+      //   setColumns({
+      //     ...data.columns,
+      //     [newStart.id]: newStart,
+      //     [newFinish.id]: newFinish,
+      //   })
+      // )
+      const newColumns = [
+        ...data.columns.filter(
+          (column) =>
+            column.id !== startColumn.id && column.id !== finishColumn.id
+        ),
+        newStart,
+        newFinish,
+      ]
+      newColumns.sort((a, b) => a.id.localeCompare(b.id))
+      dispatch(setColumns(newColumns))
     }
   }
   return (
-    <Container>
+    <Container className="mt-4">
+      <AddTask />
       <DragDropContext onDragEnd={onDragEnd}>
-        <div className="flex gap-4">
-          {data.columnOrder.map((columnId) => {
-            const column = data.columns[columnId]
-            const tasks = column.taskIds.map((taskId) => data.tasks[taskId])
+        <div className="flex gap-4 mt-4">
+          {data.columns.map((column: IColumn) => {
+            //const column = data.columns[columnId]
+            const tasks = column.taskIds.map(
+              (taskId) => data.tasks.find((task) => task.id === taskId)!
+            )
 
             return <Column key={column.id} column={column} tasks={tasks} />
           })}

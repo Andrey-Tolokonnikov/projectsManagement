@@ -1,4 +1,4 @@
-import { useEffect, useState, MouseEvent } from "react";
+import * as React from "react";
 import CardContainer from "../../CardContainer/CardContainer";
 import CreateProjectForm from "@/components/widgets/AuthForm/ui/CreateProjectForm";
 
@@ -7,9 +7,9 @@ type Props = {
 };
 
 const CardCreated = (props: Props) => {
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = React.useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!isVisible) setIsVisible(true);
   }, [isVisible]);
 
